@@ -21,6 +21,6 @@ console.log(port)
 app.use("/users", userRouter);
 
 
-app.listen(port,()=>{
+app.listen(3000,()=>{
     console.log(`Listening in Port ${port}`)
 })

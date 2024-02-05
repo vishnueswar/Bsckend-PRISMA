@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../src/auth/authProvider';
-import { addDescription, findAll, getDescriptions, login, register} from '../src/controllers/userController';
+import { addDescription, findAll, getDescriptions, login, register,deleteDescription,updateDescription} from '../src/controllers/userController';
 const router = express.Router();
 
 
@@ -14,7 +14,7 @@ router.use(authenticateToken);
 router.get('/userFindAll', findAll);
 router.post('/adddesc', addDescription);
 router.get('/getDescriptions', getDescriptions);
-// router.delete('/deleteUserTimeLine/:id',deleteDescription)
-// router.post('/updateDescriptions', updateDescription);
+router.post('/deleteUserTimeLine',deleteDescription)
+router.post('/updateDescriptions', updateDescription);
 
 export { router as userRouter };

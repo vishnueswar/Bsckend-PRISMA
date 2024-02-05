@@ -136,6 +136,25 @@ const getDescriptions = async (req: any, res: Response) => {
 //   }
 // };
 
+const deleteDescription = async (req: any, res: Response) => {
+  const { id,userId } = req.body;
+  console.log("reqid", req.userId)
+  const deleteData = await prismaInstance.description.delete({
+   where:{id:id,userId:userId}
+  });
 
+  console.log("post deleted", deleteData)
+  res.send(deleteData)
+}
+const updateDescription  = async (req: any, res: Response) => {
+  const { id,userId,comment} = req.body;
+  const deleteData = await prismaInstance.description.update({
+   where:{id:id,userId:userId},
+   data:{description:comment}
+  });
 
-export { findAll, login, register, addDescription, getDescriptions }
+  console.log("post deleted", deleteData)
+  res.send(deleteData)
+}
+
+export { findAll, login, register, addDescription, getDescriptions,deleteDescription,updateDescription }
