@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import jwt from 'jsonwebtoken';
 
 import prismaInstance from '../../prisma/instance';
@@ -86,4 +87,55 @@ const getDescriptions = async (req: any, res: Response) => {
   console.log(descriptions);
   res.send(descriptions);
 }
+// const updateDescription = async (req: any, res: Response) => {
+//   try {
+//     const { description, id } = req.body; // Include both description and id in the request body
+
+//     // Check if an ID is provided
+//     if (!id) {
+//       // If no ID is provided, create a new description
+//       const userId = req.userId;
+//       console.log("reqid", req.userId);
+//       const create = await prismaInstance.description.create({
+//         data: {
+//           description: description,
+//           userId: userId,
+//         },
+//       });
+
+//       console.log("New description created", create);
+//       res.send(create);
+//     } else {
+//       // If an ID is provided, update the existing description
+//       const userId = req.userId;
+
+//       // Check if the description belongs to the authenticated user
+//       const existingDescription = await prismaInstance.description.findUnique({
+//         where: { id },
+//       });
+
+//       if (!existingDescription) {
+//         return res.status(404).send("Description not found");
+//       }
+
+//       if (existingDescription.userId !== userId) {
+//         return res.status(403).send("Unauthorized"); // User is not authorized to update this description
+//       }
+
+//       const updatedDescription = await prismaInstance.description.update({
+//         where: { id },
+//         data: { description },
+//       });
+
+//       console.log("Description updated:", updatedDescription);
+//       res.send(updatedDescription);
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).send("Internal Server Error"); // Send a 500 status code if an error occurs
+//   }
+// };
+
+
+
 export { findAll, login, register, addDescription, getDescriptions }
