@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import jwt from 'jsonwebtoken';
 
 import prismaInstance from '../../prisma/instance';
@@ -10,7 +11,6 @@ const login = async (req: Request, res: Response) => {
   const { password, email } = req.body;
   console.log(password, email)
 
-  // Implement user login logic here
   const user = await prismaInstance.user.findUnique({
     where: { email },
   });
@@ -28,7 +28,7 @@ const register = async (req: Request, res: Response) => {
   console.log("entered register function")
   const { name, password, email } = req.body;
   console.log(name, password, email)
-  // Implement user registration logic here
+  
   const existingUser = await prismaInstance.user.findUnique({
     where: { email },
   });
@@ -44,11 +44,6 @@ const register = async (req: Request, res: Response) => {
       name,
     },
   });
-
-  // const token = jwt.sign({ userId: newUser.id }, secretKey, { expiresIn: '1h' });
-
-  // res.cookie('token', token, { httpOnly: true });
-  // console.log("sent cokkie and the cookie is ," , token);
   res.status(201).json({ message: 'User registered successfully' });
 }
 
@@ -86,4 +81,25 @@ const getDescriptions = async (req: any, res: Response) => {
   console.log(descriptions);
   res.send(descriptions);
 }
-export { findAll, login, register, addDescription, getDescriptions }
+const deleteDescription = async (req: any, res: Response) => {
+  const { id,userId } = req.body;
+  console.log("reqid", req.userId)
+  const deleteData = await prismaInstance.description.delete({
+   where:{id:id,userId:userId}
+  });
+
+  console.log("post deleted", deleteData)
+  res.send(deleteData)
+}
+const updateDescription  = async (req: any, res: Response) => {
+  const { id,userId,comment} = req.body;
+  const deleteData = await prismaInstance.description.update({
+   where:{id:id,userId:userId},
+   data:{description:comment}
+  });
+
+  console.log("post deleted", deleteData)
+  res.send(deleteData)
+}
+
+export { findAll, login, register, addDescription, getDescriptions,deleteDescription,updateDescription }
