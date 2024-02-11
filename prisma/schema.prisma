@@ -7,17 +7,22 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+
 model User {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
   email       String        @unique
   name        String?
   password    String
+  role        String     @default("USER")
   Description Description[]
 }
 
+
 model Description {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  description String
+  description String?
+  patient      String?
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id])
   userId      String   @db.ObjectId

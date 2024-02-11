@@ -23,7 +23,7 @@ const secretKey = SECRET_KEY || "";
     const decoded = jwt.verify(token, secretKey) as { userId: number };
     console.log("decoded" ,decoded)
     req.userId = decoded.userId; // Attach userId to request for further use
-    
+    console.log("authenticated")
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid token' });

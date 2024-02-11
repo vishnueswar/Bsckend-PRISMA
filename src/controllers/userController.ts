@@ -24,6 +24,7 @@ const login = async (req: Request, res: Response) => {
   res.status(200).json({ message: 'Login successful', token });
 }
 
+
 const register = async (req: Request, res: Response) => {
   console.log("entered register function")
   const { name, password, email } = req.body;
@@ -42,18 +43,23 @@ const register = async (req: Request, res: Response) => {
       password,
       email,
       name,
+      role:"USER",
     },
   });
   res.status(201).json({ message: 'User registered successfully' });
 }
 
 const addDescription = async (req: any, res: Response) => {
-  const { description } = req.body;
+  const { description, patient   } = req.body;
   const userId = req.userId;
   console.log("reqid", req.userId)
+  if (!patient) {
+    return res.status(400).json({ message: 'Patient field is required' });
+  }
   const create = await prismaInstance.description.create({
     data: {
       description: description,
+      patient  : patient,
       userId: userId,
     },
   });
@@ -70,6 +76,7 @@ const findAll = async (req: Request, res: Response) => {
 const getDescriptions = async (req: any, res: Response) => {
   console.log("entered get description")
   const userId = req.userId || "";
+  console.log(userId)
   const descriptions = await prismaInstance.user.findUnique({
     where: {
       id: userId,
