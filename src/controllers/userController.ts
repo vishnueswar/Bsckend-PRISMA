@@ -18,11 +18,14 @@ const login = async (req: Request, res: Response) => {
   if (!user || user.password !== password) {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
-
+  if ( user.status !== false) {
+    return res.status(401).json({ message: 'contact admin ' });
+  }
   const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
 
   res.status(200).json({ message: 'Login successful', token });
 }
+
 
 const register = async (req: Request, res: Response) => {
   console.log("entered register function")
@@ -42,18 +45,23 @@ const register = async (req: Request, res: Response) => {
       password,
       email,
       name,
+      role:"USER",
     },
   });
   res.status(201).json({ message: 'User registered successfully' });
 }
 
 const addDescription = async (req: any, res: Response) => {
-  const { description } = req.body;
+  const { description, patient   } = req.body;
   const userId = req.userId;
   console.log("reqid", req.userId)
+  if (!patient) {
+    return res.status(400).json({ message: 'Patient field is required' });
+  }
   const create = await prismaInstance.description.create({
     data: {
       description: description,
+      patient  : patient,
       userId: userId,
     },
   });
@@ -70,6 +78,7 @@ const findAll = async (req: Request, res: Response) => {
 const getDescriptions = async (req: any, res: Response) => {
   console.log("entered get description")
   const userId = req.userId || "";
+  console.log(userId)
   const descriptions = await prismaInstance.user.findUnique({
     where: {
       id: userId,
@@ -81,6 +90,41 @@ const getDescriptions = async (req: any, res: Response) => {
   console.log(descriptions);
   res.send(descriptions);
 }
+
+const blockUser = async (req: any, res: Response) => {
+  console.log("entered Blocking section")
+  const userId = req.body.userId || "";
+  console.log(userId)
+
+  try {
+    // Fetch the user details from the database
+    const user = await prismaInstance.user.findUnique({
+      where: { id: userId },
+    });
+console.log(user)
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Toggle the user's status using the not operator
+    const updatedStatus = !user.status;
+
+    // Update the user status in the database
+    await prismaInstance.user.update({
+      where: { id: userId },
+      data: { status: updatedStatus },
+    });
+
+    return res.status(200).json({ message: 'User status updated successfully' });
+  } catch (error) {
+    console.error('Error blocking user:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
+
 const deleteDescription = async (req: any, res: Response) => {
   const { id,userId } = req.body;
   console.log("reqid", req.userId)
@@ -102,4 +146,4 @@ const updateDescription  = async (req: any, res: Response) => {
   res.send(deleteData)
 }
 
-export { findAll, login, register, addDescription, getDescriptions,deleteDescription,updateDescription }
+export { findAll, login, register, addDescription, getDescriptions,deleteDescription,updateDescription,blockUser }
