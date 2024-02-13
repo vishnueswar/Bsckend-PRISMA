@@ -52,7 +52,7 @@ const register = async (req: Request, res: Response) => {
 }
 
 const addDescription = async (req: any, res: Response) => {
-  const { description, patient   } = req.body;
+  const { description, patient,fees,dueDate,gender,patientPlace} = req.body;
   const userId = req.userId;
   console.log("reqid", req.userId)
   if (!patient) {
@@ -63,6 +63,12 @@ const addDescription = async (req: any, res: Response) => {
       description: description,
       patient  : patient,
       userId: userId,
+      fees:fees,
+      dueDate:dueDate,
+      gender:gender,
+      patientPlace:patientPlace,
+
+
     },
   });
 
@@ -97,20 +103,15 @@ const blockUser = async (req: any, res: Response) => {
   console.log(userId)
 
   try {
-    // Fetch the user details from the database
     const user = await prismaInstance.user.findUnique({
       where: { id: userId },
     });
 console.log(user)
-    // Check if the user exists
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    // Toggle the user's status using the not operator
     const updatedStatus = !user.status;
 
-    // Update the user status in the database
     await prismaInstance.user.update({
       where: { id: userId },
       data: { status: updatedStatus },
