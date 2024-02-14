@@ -137,10 +137,10 @@ const deleteDescription = async (req: any, res: Response) => {
   res.send(deleteData)
 }
 const updateDescription  = async (req: any, res: Response) => {
-  const { id,userId,comment} = req.body;
+  const { id,userId,comment,fees,gender,dueDate,patientPlace} = req.body;
   const deleteData = await prismaInstance.description.update({
    where:{id:id,userId:userId},
-   data:{description:comment}
+   data:{description:comment,fees:fees,gender:gender,dueDate:dueDate,patientPlace:patientPlace}
   });
 
   console.log("post deleted", deleteData)
